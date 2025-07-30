@@ -14,8 +14,8 @@ interface Message {
 }
 
 const Chat: React.FC = () => {
-    const { user, logout } = useContext(AuthContext);
-    const navigate = useNavigate();
+  const { user, logout } = useContext(AuthContext);
+  const navigate = useNavigate();
 
   const [username] = useState(user?.name || '');
   const [message, setMessage] = useState('');
@@ -26,6 +26,12 @@ const Chat: React.FC = () => {
   const socketRef = useRef<Socket | null>(null);
 
   useEffect(() => {
+
+    if (!user) {
+      navigate('/');
+      return;
+    }
+
     // Conectar ao servidor Socket.IO
     const socket = io('http://localhost:3333');
     socketRef.current = socket;
@@ -39,7 +45,7 @@ const Chat: React.FC = () => {
       setMessages(msgs);
     });
 
-return () => {
+    return () => {
       socket.disconnect();
       console.log("❌ Socket desconectado");
     };
@@ -76,14 +82,14 @@ return () => {
       <Paper elevation={3} sx={{ p: 4, width: '100%', maxWidth: 600 }}>
         <form onSubmit={handleSubmit}>
           <Stack spacing={2}>
-        <Stack direction="row" alignItems="center" justifyContent="space-between">
-            <Typography align="left" gutterBottom>
+            <Stack direction="row" alignItems="center" justifyContent="space-between">
+              <Typography align="left" gutterBottom>
                 <strong>Usuário: </strong> {user?.name}
-            </Typography>
-            <Button onClick={handleLogout} variant="outlined" size="small" color="primary">
+              </Typography>
+              <Button onClick={handleLogout} variant="outlined" size="small" color="primary">
                 Sair
-            </Button>
-        </Stack>
+              </Button>
+            </Stack>
             <Box
               sx={{
                 border: '1px solid #ddd',
